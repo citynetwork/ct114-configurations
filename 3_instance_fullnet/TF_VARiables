@@ -2,6 +2,7 @@ export TF_VAR_instance_name="my_tf_instance"
 export TF_VAR_instance_flavor="b.1c1gb"
 export TF_VAR_image_name="Ubuntu 22.04 Jammy Jellyfish x86_64"
 export TF_VAR_boot_vol_capacity=16
+export TF_VAR_boot_vol_name="my_tf_volume"
 export TF_VAR_network_name="my_tf_network"
 export TF_VAR_subnet_name="my_tf_subnet"
 export TF_VAR_router_name="my_tf_router"

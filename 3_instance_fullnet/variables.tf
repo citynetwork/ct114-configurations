@@ -38,3 +38,7 @@ variable "instance_flavor" {
 variable "boot_vol_capacity" {
   type = number
 }
+
+variable "boot_vol_name" {
+  type = string
+}

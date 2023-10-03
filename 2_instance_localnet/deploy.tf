@@ -15,14 +15,23 @@ resource "openstack_networking_subnet_v2" "subnet" {
   dns_nameservers = ["1.1.1.1", "9.9.9.9"]
 }
 
+resource "openstack_blockstorage_volume_v3" "boot_volume" {
+  name = var.boot_vol_name
+  size = var.boot_vol_capacity
+  image_id = data.openstack_images_image_v2.image.id
+
+  lifecycle {
+    ignore_changes = [ image_id, ]
+  }
+}
+
 resource "openstack_compute_instance_v2" "instance" {
   name = var.instance_name
   flavor_name = var.instance_flavor
 
   block_device {
-    uuid                  = data.openstack_images_image_v2.image.id
-    source_type           = "image"
-    volume_size           = var.boot_vol_capacity
+    uuid                  = openstack_blockstorage_volume_v3.boot_volume.id
+    source_type           = "volume"
     boot_index            = 0
     destination_type      = "volume"
     delete_on_termination = true
