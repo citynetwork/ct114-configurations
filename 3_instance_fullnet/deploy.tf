@@ -70,7 +70,7 @@ resource "openstack_compute_instance_v2" "instance" {
     source_type           = "volume"
     boot_index            = 0
     destination_type      = "volume"
-    delete_on_termination = true
+    delete_on_termination = false
   }
 
   user_data = "${file("config.yaml")}"
