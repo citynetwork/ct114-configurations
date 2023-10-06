@@ -2,3 +2,5 @@
 
 package_update: true
 package_upgrade: true
+
+ssh_deletekeys: false
