@@ -43,6 +43,12 @@ resource "openstack_networking_secgroup_rule_v2" "ssh" {
   remote_ip_prefix = "0.0.0.0/0"
 }
 
+resource "openstack_networking_port_v2" "instance_port" {
+  network_id = openstack_networking_network_v2.network.id
+  security_group_ids = [ openstack_networking_secgroup_v2.secgroup.id ]
+  depends_on  = [openstack_networking_subnet_v2.subnet]
+}
+
 resource "openstack_networking_secgroup_rule_v2" "icmp" {
   security_group_id = openstack_networking_secgroup_v2.secgroup.id
   direction = "ingress"
@@ -77,13 +83,13 @@ resource "openstack_compute_instance_v2" "instance" {
   key_pair = openstack_compute_keypair_v2.keypair.name
 
   network {
-    uuid = openstack_networking_network_v2.network.id
+    port = openstack_networking_port_v2.instance_port.id
   }
   security_groups = [ openstack_networking_secgroup_v2.secgroup.name ]
 }
 
-resource "openstack_compute_floatingip_associate_v2" "floatingip" {
+resource "openstack_networking_floatingip_associate_v2" "floatingip" {
   floating_ip = "${openstack_networking_floatingip_v2.floatingip.address}"
-  instance_id = "${openstack_compute_instance_v2.instance.id}"
-  fixed_ip    = "${openstack_compute_instance_v2.instance.network.0.fixed_ip_v4}"
+  port_id     = "${openstack_networking_port_v2.instance_port.id}"
+  depends_on  = [openstack_networking_router_interface_v2.router_interface]
 }
